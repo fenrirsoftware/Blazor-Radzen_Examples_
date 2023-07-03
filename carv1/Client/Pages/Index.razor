@@ -1,0 +1,70 @@
+﻿@using Radzen
+@using Radzen.Blazor
+@page "/"
+
+@page "/userlist"
+
+<h3>Kullanıcı Listesi</h3>
+
+<div>
+    <label>İsim:</label>
+    <RadzenTextBox @bind-Value="@name" class="form-control" Style="width: 400px" />
+    <div>
+
+        <br>
+
+        <label>Soyisim:</label>
+        <RadzenTextBox @bind-Value="@surname" class="form-control" Style="width: 400px" />
+    </div>
+
+    <br>
+    <div>
+        <label>Yaş:</label>
+        <RadzenNumeric @bind-Value=@age Style="width: 100px" />
+    </div>
+</div>
+
+<br>
+
+<button class="btn btn-primary" @onclick="AddUser">Ekle</button>
+
+<hr />
+
+<RadzenGrid TItem="User" Data="@users">
+    <Columns>
+        <RadzenGridColumn TItem="User" Property="Name" Title="İsim" />
+        <RadzenGridColumn TItem="User" Property="Surname" Title="Soyisim" />
+        <RadzenGridColumn TItem="User" Property="Age" Title="Yaş" />
+    </Columns>
+</RadzenGrid>
+
+@code {
+    private string name;
+    private string surname;
+    private int age;
+    private List<User> users = new List<User>();
+
+    private void AddUser()
+    {
+        User user = new User
+            {
+                Name = name,
+                Surname = surname,
+                Age = age
+            };
+
+        users.Add(user);
+
+        // Değerleri sıfırla
+        name = string.Empty;
+        surname = string.Empty;
+        age = 0;
+    }
+
+    public class User
+    {
+        public string Name { get; set; }
+        public string Surname { get; set; }
+        public int Age { get; set; }
+    }
+}
