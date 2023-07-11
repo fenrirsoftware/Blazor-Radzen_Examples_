@@ -1,70 +1,164 @@
-﻿@using Radzen
+﻿@page "/"
+
 @using Radzen.Blazor
-@page "/"
+@using Radzen
+@using System.Collections
+@using System.ComponentModel.DataAnnotations
+@using carv1.Client.Model
 
-@page "/userlist"
 
-<h3>Kullanıcı Listesi</h3>
+
+
+
+
+
+<h4>Yeni Araç Ekle</h4>
 
 <div>
-    <label>İsim:</label>
-    <RadzenTextBox @bind-Value="@name" class="form-control" Style="width: 400px" />
-    <div>
+    <label>Marka: </label>
+    <input @bind="yeniarac.Marka" />
 
-        <br>
 
-        <label>Soyisim:</label>
-        <RadzenTextBox @bind-Value="@surname" class="form-control" Style="width: 400px" />
-    </div>
+
+    <label>Model: </label>
+    <input @bind="yeniarac.Model" />
+
+    <label>Görsel: </label>
+    <input @bind="yeniarac.Görsel" />
+
+    <button class="btn btn-primary" @onclick="YeniAracEkle">Kaydet</button>
 
     <br>
-    <div>
-        <label>Yaş:</label>
-        <RadzenNumeric @bind-Value=@age Style="width: 100px" />
+        <br>
+    
+
+
+    <div style="text-align: left;">
+        <div>
+            <RadzenDropDown @bind-Value=@value
+                            AllowFiltering="true"
+                            Data=@aracListesi.Select(p => p.Marka+" "+p.Model)
+                            LoadDataEvent="LoadPersonelListesi"
+                            Style="width: 100%; max-width: 400px;" />
+        </div>
     </div>
+
+
 </div>
 
+
+
+
+
+
+<br>
 <br>
 
-<button class="btn btn-primary" @onclick="AddUser">Ekle</button>
 
-<hr />
 
-<RadzenGrid TItem="User" Data="@users">
-    <Columns>
-        <RadzenGridColumn TItem="User" Property="Name" Title="İsim" />
-        <RadzenGridColumn TItem="User" Property="Surname" Title="Soyisim" />
-        <RadzenGridColumn TItem="User" Property="Age" Title="Yaş" />
-    </Columns>
-</RadzenGrid>
+@if (!string.IsNullOrEmpty(value))
+{
+    var selectedcar = aracListesi.FirstOrDefault(p => p.Marka+" "+p.Model == value);
+    
+    if (selectedcar != null)
+    {
+        <h4>Seçilen Araç Bilgileri:</h4>
+        <p>Marka: @selectedcar.Marka</p>
+
+
+        <RadzenStack Orientation="Orientation.Vertical" Gap="3rem" class="rz-p-12 animate-in-right">
+
+            <RadzenImage Path="@selectedcar.Görsel" Style="width: 50%; float: right; height: auto; margin-left:10%; margin-right:10%;" />
+
+
+        </RadzenStack>
+
+
+
+        <style>
+            .dropdown-wrapper {
+                display: flex;
+                justify-content: flex-start;
+                transform: rotate(-90deg);
+                transform-origin: left top;
+            }
+
+                .dropdown-wrapper .dropdown-content {
+                    transform: rotate(90deg);
+                    transform-origin: left top;
+                }
+        </style>
+
+        <style>
+            @@keyframes slide-in-right {
+                0% {
+                    opacity: 0;
+                    transform: translateX(100%);
+                }
+
+                100% {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+
+            .animate-in-right {
+                animation: slide-in-right 0.5s forwards;
+            }
+
+
+
+
+           
+        </style>
+
+
+    }
+    else
+    {
+        <p>Seçilen Araç bulunamadı.</p>
+    }
+}
+
+
+
+
 
 @code {
-    private string name;
-    private string surname;
-    private int age;
-    private List<User> users = new List<User>();
 
-    private void AddUser()
+    //Sidebar sadece markalama amacıyla kullanıldığı ve işlevsiz olduğu için kaldırıldı
+    //onun yerine arama özellikli Dropdown eklendi
+
+
+
+
+
+
+
+
+    string value="Hyundai Kona";
+
+
+
+    private List<car> aracListesi = new List<car>();
+    private car yeniarac = new car();
+
+
+    private void YeniAracEkle()
     {
-        User user = new User
-            {
-                Name = name,
-                Surname = surname,
-                Age = age
-            };
-
-        users.Add(user);
-
-        // Değerleri sıfırla
-        name = string.Empty;
-        surname = string.Empty;
-        age = 0;
+        aracListesi.Add(new car(yeniarac.Marka, yeniarac.Model, yeniarac.Görsel));
+        yeniarac = new car();
     }
 
-    public class User
+    protected override void OnInitialized()
     {
-        public string Name { get; set; }
-        public string Surname { get; set; }
-        public int Age { get; set; }
+        aracListesi.Add(new car("Hyundai", "Kona", "https://www.pngmart.com/files/22/Hyundai-Kona-EV-Download-PNG-Image.png"));
+        aracListesi.Add(new car("Ford", "Kuga", "https://www.pngmart.com/files/22/Ford-Kuga-PNG-Transparent.png"));
+        aracListesi.Add(new car("Mercedes", "Maybach", "https://purepng.com/public/uploads/large/515062794124rxtmmalpfn3qtcjq5obo0u0zlrt4nhendt4yk6lz6nzkodtulmziyws4fzyzbevcnrsngxdpqyuv14bcqjwyrwcvl4kf7cf3jcq.png"));
+        aracListesi.Add(new car("McLaren", "Senna", "https://www.pngplay.com/wp-content/uploads/13/McLaren-Senna-Transparent-PNG.png"));
+        aracListesi.Add(new car("Cadillac", "Escalade", "https://www.cars.com/i/large/in/v2/stock_photos/cf41116c-8aa7-4bd0-86c5-05b900995d89/f6c0da59-9f6c-4bbd-b03f-ea45194343a2.png"));
+        aracListesi.Add(new car("Ford", "Transit", "https://cdnepws.azureedge.net/getmedia/9d84bf1f-2fc3-402e-86ba-c42956216ad9/Transit-Kamyonet_1.png.aspx?width=668&amp;height=376&amp;ext=.png&ext=.png"));
+
+       
     }
 }

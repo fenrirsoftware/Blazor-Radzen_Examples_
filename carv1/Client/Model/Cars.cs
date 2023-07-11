@@ -4,16 +4,28 @@ using static System.Net.WebRequestMethods;
 namespace carv1.Client.Model
 
 {
-    public class Cars
+    public class car
     {
-     public string Name { get; set; }
-     public string ImageUrl { get; set; }
-     public string Desc { get; set; }
+        private static int idCounter = 0;
 
+        public int Id { get; set; }
+        public string Marka { get; set; }
+        public string Model { get; set; }
+        public string Görsel { get; set; }
 
+        public car()
+        {
+           
+        }
 
+        public car(string marka, string model, string görsel)
+        {
+            Id = ++idCounter;
+            Marka = marka;
+            Model = model;
+            Görsel = görsel;
+        }
     }
 
 
-  
 }
